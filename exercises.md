@@ -18,13 +18,13 @@ Gọi `call_openai` với temperature 0.0, 0.5, 1.0 và 1.5 dùng prompt
 
 **Bạn nhận thấy quy luật gì qua bốn phản hồi?** (2–3 câu)
 
-> Qua bốn phản hồi thực tế, ta thấy rõ quy luật: Ở mức 0.0, mô hình mang tính tiền định (deterministic) cao nhất, trả về thông tin phổ biến nhất (Hang Sơn Đoòng) với câu từ khuôn mẫu và lặp lại ổn định; khi tăng lên 0.5 và 1.0, cách diễn đạt bắt đầu linh hoạt, tự nhiên hơn và bổ sung chi tiết đa dạng (thời gian hình thành hang động 2-5 triệu năm trước); đến mức 1.5, xác suất lấy mẫu phân tán mạnh khiến mô hình chuyển sang chọn địa danh khác (Vịnh Hạ Long) với văn phong tự do hơn. Quy luật tổng quát là temperature tỷ lệ thuận với tính ngẫu nhiên và đa dạng của từ vựng: temperature thấp giúp câu trả lời nhất quán, chuẩn xác; temperature cao tăng tính sáng tạo nhưng dễ dẫn đến sai lệch ngữ nghĩa hoặc hallucination.
+> Khi tăng temperature từ 0.0 lên 1.5, câu trả lời chuyển dần từ an toàn, lặp lại sang phong phú và ngẫu nhiên hơn. Ở mức 0.0 và 0.5, model đều chọn sự thật quen thuộc về Hang Sơn Đoòng với câu từ khá cố định. Khi lên 1.0 và 1.5, văn phong linh hoạt hơn hẳn và model đổi sang chủ đề khác (Vịnh Hạ Long), cho thấy temperature càng cao thì phản hồi càng đa dạng nhưng cũng dễ lan man hơn.
 
 ### Câu 1.2 — Chọn temperature cho sản phẩm
 
 **Bạn sẽ đặt temperature bao nhiêu cho chatbot hỗ trợ khách hàng, và tại sao?**
 
-> Tôi sẽ đặt temperature trong khoảng **0.1 đến 0.3** (hoặc 0.0 khi tra cứu chính sách/FAQ). Chatbot hỗ trợ khách hàng đòi hỏi tính chính xác, trung thực và bám sát chính sách sản phẩm/điều khoản bảo hành của doanh nghiệp; nhiệt độ thấp giúp giảm thiểu tối đa hiện tượng "bịa đặt" (hallucination) và đảm bảo tính nhất quán cao (hai khách hàng hỏi cùng một chính sách hoàn tiền sẽ nhận được câu trả lời đồng nhất, tránh gây tranh chấp). Mức 0.1–0.2 vẫn giữ cho câu từ tự nhiên mà không phương hại đến tính chính xác.
+> Mình sẽ chọn khoảng **0.0 đến 0.2**. Chatbot hỗ trợ khách hàng cần ưu tiên tính chính xác và nhất quán theo chính sách công ty (tránh trường hợp hai khách hỏi cùng một vấn đề mà nhận câu trả lời khác nhau). Mức nhiệt độ thấp giúp giảm thiểu nguy cơ model bịa thông tin (hallucination), trong khi câu từ vẫn đủ tự nhiên và thân thiện.
 
 ### Câu 1.3 — Đánh đổi chi phí
 
@@ -34,9 +34,9 @@ mỗi lần trung bình ~350 token đầu ra.
 **Ước tính GPT-4o đắt hơn GPT-4o-mini bao nhiêu lần cho workload này? Nêu một
 trường hợp GPT-4o xứng đáng với chi phí và một trường hợp nên dùng mini:**
 
-> - **Tính toán chi phí:** Tổng lượt gọi mỗi ngày là $10.000 \times 3 = 30.000$ requests, tương ứng $30.000 \times 350 = 10.500.000$ output tokens ($10.500$ nghìn tokens). Với giá GPT-4o ($0.010/1K), chi phí là $\$105.00$/ngày ($\sim \$3.150$/tháng). Với giá GPT-4o-mini ($0.0006/1K), chi phí chỉ là $\$6.30$/ngày ($\sim \$189$/tháng). Do đó, GPT-4o đắt hơn GPT-4o-mini đúng **16.67 lần** ($0.010 / 0.0006$).
-> - **Trường hợp GPT-4o xứng đáng:** Tác vụ tư vấn pháp lý, thẩm định hợp đồng tài chính phức tạp hoặc chẩn đoán kỹ thuật đòi hỏi suy luận logic nhiều bước (complex reasoning), nơi một sai sót nhỏ có thể gây thiệt hại tài chính nghiêm trọng.
-> - **Trường hợp nên dùng GPT-4o-mini:** Tác vụ phân loại ý định người dùng (intent classification), tóm tắt tin nhắn ngắn, hoặc trả lời các câu hỏi thường gặp (FAQ) có lưu lượng truy cập lớn cần phản hồi tức thì với chi phí tối thiểu.
+> - **Chênh lệch chi phí:** Mỗi ngày hệ thống tốn $10.000 \times 3 \times 350 = 10.500.000$ output tokens ($10.500\text{K tokens}$). Dùng GPT-4o tốn $\$105$/ngày, trong khi GPT-4o-mini chỉ tốn $\$6.3$/ngày. Như vậy, GPT-4o đắt hơn mini khoảng **16.7 lần** ($0.010 / 0.0006$).
+> - **Khi nào nên dùng GPT-4o:** Các tác vụ cần suy luận phức tạp và độ chính xác cao như rà soát hợp đồng pháp lý, tư vấn tài chính hay chẩn đoán kỹ thuật.
+> - **Khi nào nên dùng GPT-4o-mini:** Các tác vụ đơn giản, lặp lại nhiều như phân loại ý định người dùng (intent classification), tóm tắt tin nhắn ngắn, hoặc trả lời FAQ có sẵn.
 
 ---
 
@@ -53,7 +53,7 @@ Gọi `chat_with_system_prompt` hai lần với cùng câu hỏi
 **Hai phản hồi khác nhau như thế nào (độ dài, từ vựng, ví dụ)? System prompt
 ảnh hưởng đến hành vi model ra sao?** (3–4 câu)
 
-> Hai phản hồi có sự khác biệt rõ rệt: Persona giáo viên tiểu học dùng hình ảnh ẩn dụ cuốn sổ ghi chép điểm số khi chơi trò chơi, mỗi trang là một khối, từ ngữ mộc mạc và câu văn ngắn giúp trẻ 8 tuổi dễ hình dung; trong khi persona chuyên gia tài chính dùng thuật ngữ học thuật chuẩn mực như "công nghệ sổ cái phân tán (DLT)", "tính bất biến", "mã hóa liên kết theo thứ tự thời gian". System prompt hoạt động như một chỉ thị đạo diễn cấp cao định hình toàn bộ phong cách hành văn, mức độ sâu sắc kỹ thuật và lựa chọn từ vựng của mô hình. Điều này chứng minh rằng cùng một tri thức nền tảng, system prompt có khả năng biến đổi linh hoạt cách truyền đạt để nhắm đúng đối tượng mục tiêu.
+> Bản cho học sinh tiểu học viết rất ngắn gọn, dùng ví dụ cuốn sổ ghi điểm khi chơi trò chơi và từ ngữ đơn giản để trẻ dễ hiểu. Ngược lại, bản cho chuyên gia tài chính dùng nhiều thuật ngữ chuyên ngành như "sổ cái phân tán", "tính bất biến" và giải thích cơ chế sâu hơn. Qua đó thấy system prompt quyết định trực tiếp tông giọng, vốn từ và độ sâu kỹ thuật của câu trả lời. Nhờ đặt đúng persona, cùng một mô hình có thể linh hoạt điều chỉnh cách giải thích cho từng đối tượng người nghe khác nhau.
 
 ### Câu 2.2 — tiktoken vs đếm từ
 
@@ -63,8 +63,11 @@ Chọn một đoạn văn tiếng Việt ~100 từ. So sánh số token theo `co
 **Hai con số chênh nhau bao nhiêu phần trăm? Vì sao tiếng Việt thường tốn
 nhiều token hơn tiếng Anh cùng độ dài?**
 
-> - **So sánh số liệu:** Thử nghiệm trên đoạn văn mẫu tiếng Việt 117 từ, `count_tokens` (tiktoken o200k_base) trả về 153 tokens, trong khi công thức ước lượng `117 / 0.75` ra 156 tokens; mức chênh lệch thực tế là khoảng **1.92%**.
-> - **Vì sao tiếng Việt tốn nhiều token hơn tiếng Anh:** Thứ nhất, tokenizer (như BPE) được huấn luyện chủ yếu trên văn bản tiếng Anh, nên hầu hết từ vựng tiếng Anh thông dụng đều nằm trọn trong 1 token duy nhất. Thứ hai, tiếng Việt sử dụng nhiều nguyên âm có dấu thanh (như ư, ơ, ê, dấu hỏi, ngã, nặng) được mã hóa bằng nhiều byte UTF-8, khiến tokenizer thường phải tách mỗi âm tiết thành 2–3 subword tokens. Thứ ba, từ ghép tiếng Việt có khoảng trắng giữa các tiếng, khiến mô hình xử lý từng tiếng riêng lẻ thay vì gom thành một khối từ vựng hoàn chỉnh.
+> - **So sánh số liệu:** Với đoạn văn thử nghiệm 117 từ, tiktoken (`o200k_base`) đếm được 153 tokens, còn công thức ước lượng `117 / 0.75` ra 156 tokens, chênh lệch thực tế chỉ khoảng **1.9%**.
+> - **Vì sao tiếng Việt tốn token hơn tiếng Anh:**
+>   1. Bộ tokenizer (BPE) được train chủ yếu bằng tiếng Anh, nên đa số từ tiếng Anh phổ biến nằm trọn trong 1 token.
+>   2. Tiếng Việt có nhiều nguyên âm có dấu thanh và ký tự Unicode đa byte, nên tokenizer hay phải chẻ một âm tiết thành 2–3 subword tokens.
+>   3. Từ ghép tiếng Việt có khoảng trắng giữa các âm tiết, nên model tokenize từng tiếng một chứ không gộp cả từ lại được.
 
 ---
 
@@ -75,7 +78,7 @@ nhiều token hơn tiếng Anh cùng độ dài?**
 **Streaming quan trọng nhất trong trường hợp nào, và khi nào thì
 non-streaming lại phù hợp hơn?** (1 đoạn văn)
 
-> Streaming quan trọng nhất trong các ứng dụng đối thoại tương tác thời gian thực giữa người và máy (như chatbot chăm sóc khách hàng, trợ lý lập trình CLI, voice assistant) vì nó tối ưu hóa triệt để chỉ số thời gian phản hồi đầu tiên (Time-to-First-Token - TTFT); thay vì bắt người dùng phải chờ đợi thụ động suốt 5–15 giây trước một màn hình trống, các token được in ra liên tục tạo cảm giác phản hồi tức thì và cho phép người dùng bắt đầu đọc thông tin ngay lập tức. Ngược lại, non-streaming lại phù hợp hơn trong các trường hợp: (1) Các tác vụ xử lý hàng loạt chạy ngầm (batch processing/offline ETL) không có sự tương tác trực tiếp của con người; (2) Khi hệ thống cần sinh dữ liệu có cấu trúc định dạng nghiêm ngặt (như JSON, XML, SQL) cần nhận đầy đủ toàn bộ payload trước khi đưa vào hàm parse kiểm tra cú pháp; hoặc (3) Khi luồng xử lý bắt buộc phải chạy qua một bộ lọc kiểm duyệt an toàn (moderation/guardrails) để quét nội dung độc hại trước khi hiển thị cho người dùng cuối.
+> Streaming quan trọng nhất khi xây dựng giao diện tương tác trực tiếp với người dùng (chatbot web, terminal, trợ lý ảo). Việc trả về từng token liên tục giúp tối ưu thời gian phản hồi đầu tiên (TTFT), người dùng có thể đọc ngay lập tức thay vì phải sốt ruột chờ 5–10 giây trước màn hình trống. Ngược lại, non-streaming lại phù hợp hơn khi chạy tác vụ ngầm theo lô (batch job), khi cần model trả về dữ liệu có cấu trúc (JSON, SQL) để code parse nguyên khối, hoặc khi cần quét kiểm duyệt an toàn (guardrails) toàn bộ nội dung trước khi hiển thị cho người dùng.
 
 ### Câu 3.2 — Vì sao backoff theo cấp số nhân?
 
@@ -83,8 +86,8 @@ non-streaming lại phù hợp hơn?** (1 đoạn văn)
 thế gì khi API bị quá tải? Điều gì xảy ra nếu hàng nghìn client cùng retry
 với delay cố định giống nhau?**
 
-> - **Lợi thế của Exponential Backoff:** Khi API gặp sự cố quá tải hoặc nghẽn mạng tạm thời (HTTP 429 hoặc 503), chiến lược tăng thời gian chờ gấp đôi sau mỗi lần thử lại ($0.1s \rightarrow 0.2s \rightarrow 0.4s \dots$) giúp kéo giãn khoảng cách giữa các lần gửi request, tạo ra "khoảng thở" cần thiết để hệ thống backend kịp xử lý hàng đợi đang ùn ứ và giải phóng tài nguyên.
-> - **Nếu hàng nghìn client retry với delay cố định:** Sẽ lập tức kích hoạt hiện tượng "bão đồng bộ" hay **Thundering Herd Problem**. Khi server vừa phục hồi sau đúng 1 giây, hàng nghìn client đồng thời dội lại các request cùng một thời điểm chính xác, gây ra một đợt sốc tải mới khiến server sập trở lại ngay lập tức (cascading failure). Do đó, exponential backoff (thường kèm một lượng nhiễu ngẫu nhiên jitter) là tiêu chuẩn bắt buộc để bảo vệ sự ổn định của cả client lẫn server.
+> - **Lợi thế của Exponential Backoff:** Khi gặp lỗi quá tải (429 hoặc 503), việc nhân đôi thời gian chờ sau mỗi lần thử ($0.1s \rightarrow 0.2s \rightarrow 0.4s \dots$) giúp kéo giãn tần suất gọi API, cho server thời gian xử lý hết hàng đợi đang nghẽn và tự phục hồi.
+> - **Nếu hàng nghìn client retry cố định (ví dụ 1 giây):** Sẽ gây ra hiện tượng bão yêu cầu (_thundering herd_). Cứ đúng 1 giây sau, tất cả client lại đồng loạt dội request về cùng một thời điểm, khiến server vừa gượng dậy đã bị nghẽn tải sập tiếp. Do đó, exponential backoff (thường kèm một chút ngẫu nhiên jitter) giúp rải đều tải ra và bảo vệ hệ thống ổn định hơn.
 
 ---
 
@@ -96,11 +99,11 @@ với delay cố định giống nhau?**
 thích 1–2 lựa chọn từ ngữ quan trọng trong prompt (ví dụ: vì sao yêu cầu
 "trả lời ngắn gọn", vì sao chỉ định ngôn ngữ...):**
 
-> - **Persona được lựa chọn:**
->   `"Bạn là trợ giảng AI thông minh và tận tâm của khóa học AI Practical Competency (K4), chuyên gia về Python và mô hình ngôn ngữ lớn (LLM). Hãy trả lời ngắn gọn, có cấu trúc rõ ràng, dùng ví dụ trực quan và luôn giải thích bằng tiếng Việt chuẩn mực."`
-> - **Giải thích các lựa chọn từ ngữ quan trọng:**
->   1. *"Trả lời ngắn gọn, có cấu trúc rõ ràng":* Do môi trường hoạt động là giao diện dòng lệnh (CLI/Terminal) có không gian hiển thị giới hạn, câu trả lời ngắn gọn, dùng gạch đầu dòng giúp người học tiếp thu thông tin nhanh chóng mà không cần cuộn trang nhiều lần, đồng thời tiết kiệm đáng kể lượng output token (giảm độ trễ và chi phí).
->   2. *"Luôn giải thích bằng tiếng Việt chuẩn mực":* Đảm bảo trải nghiệm thân thiện và dễ hiểu đối với học viên Việt Nam, ngăn mô hình tự động chuyển ngữ sang tiếng Anh khi gặp các thuật ngữ lập trình chuyên sâu, nhưng vẫn giữ nguyên các từ khóa kỹ thuật cần thiết trong ngoặc đơn để đối chiếu.
+> - **System prompt đã chọn:**
+>   `"Bạn là trợ giảng thân thiện của khóa AI, chuyên về Python và LLM. Hãy trả lời ngắn gọn, dùng gạch đầu dòng và giải thích bằng tiếng Việt dễ hiểu."`
+> - **Lý do lựa chọn từ ngữ:**
+>   1. _"Trả lời ngắn gọn, dùng gạch đầu dòng":_ Vì trợ lý chạy trên terminal có không gian hẹp, câu trả lời ngắn gọn và chia ý rõ ràng sẽ giúp học viên dễ đọc, không phải cuộn màn hình nhiều và cũng tiết kiệm đáng kể token đầu ra.
+>   2. _"Giải thích bằng tiếng Việt dễ hiểu":_ Giúp người học tiếp thu kiến thức tự nhiên, đồng thời ngăn model tự động chuyển sang tiếng Anh khi gặp các thuật ngữ kỹ thuật phức tạp.
 
 ### Câu 4.2 — Hạn chế & cải thiện
 
@@ -108,9 +111,9 @@ thích 1–2 lựa chọn từ ngữ quan trọng trong prompt (ví dụ: vì sa
 không có bộ nhớ dài hạn, không kiểm duyệt nội dung...)? Đề xuất một cải
 thiện cụ thể và mô tả ngắn cách triển khai:**
 
-> - **Hạn chế lớn nhất:** Quản lý ngữ cảnh chỉ dựa vào cửa sổ trượt 3 lượt gần nhất (`history = history[-6:]`). Khi phiên hội thoại kéo dài vượt quá 3 lượt hỏi-đáp, toàn bộ thông tin quan trọng ban đầu (như yêu cầu đề bài, các biến cấu hình, mục tiêu người dùng đã nêu) sẽ bị xóa bỏ hoàn toàn, khiến trợ lý bị "mất trí nhớ", dẫn đến câu trả lời thiếu mạch lạc hoặc mâu thuẫn với các lượt trước.
-> - **Cải thiện cụ thể: Triển khai Conversation Summary Buffer Memory (Bộ nhớ tóm tắt kết hợp bộ đệm).**
->   - *Cách triển khai:* Duy trì một bộ đệm chứa 2 lượt hội thoại gần nhất và một biến chuỗi tóm tắt `conversation_summary`. Khi một lượt chat cũ chuẩn bị trôi ra khỏi bộ đệm, hệ thống sẽ kích hoạt một lời gọi API nền (sử dụng model nhẹ `gpt-4o-mini`) với nhiệm vụ tóm tắt thông tin quan trọng của các lượt cũ và cập nhật vào `conversation_summary`. Mỗi khi gửi request mới, cấu trúc messages sẽ gồm: `[System Persona] + [{"role": "system", "content": f"Tóm tắt ngữ cảnh cuộc hội thoại trước: {conversation_summary}"}] + [2 lượt gần nhất trong buffer] + [User message mới]`. Cơ chế này giữ được toàn bộ diễn biến cuộc đối thoại lâu dài mà lượng token gửi đi vẫn luôn nhỏ gọn và ổn định.
+> - **Hạn chế lớn nhất:** Lịch sử trò chuyện chỉ giữ lại 3 lượt gần nhất (`history[-6:]`). Nếu nói chuyện dài hơn 3 câu, bot sẽ quên sạch các thông tin ban đầu (như đề bài, biến đã khai báo hay mục tiêu người dùng), dẫn đến câu trả lời bị cụt ý hoặc mâu thuẫn với phía trước.
+> - **Đề xuất cải thiện: Kết hợp tóm tắt hội thoại với bộ đệm (Summary Buffer Memory).**
+>   - _Cách triển khai:_ Giữ lại 2 lượt chat mới nhất trong bộ nhớ; khi các tin nhắn cũ hơn bị đẩy ra ngoài, kích hoạt một lệnh gọi ngầm dùng model nhỏ (`gpt-4o-mini`) để tóm tắt chúng thành 1 đoạn ngắn lưu vào biến `summary`. Khi gọi API, gửi kèm: `[System Prompt] + [Đoạn tóm tắt cũ] + [2 lượt chat gần nhất] + [Câu hỏi mới]`. Cách này vừa giữ được mạch hội thoại xuyên suốt mà không sợ bị phình số lượng token.
 
 ---
 
